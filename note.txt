@@ -1,0 +1,145 @@
+un metodo applicato ad una stringa ne dà una nuova senza modificare quella vecchia,
+mentre applicato ad una lista modifica la lista stessa.
+
+in=appartiene, posso mettergli una lista qualunque o generarla con range
+
+get è una figata! e così i dictionaries
+
+get ti estrae il valore per quel particolare indice - quindi l'output è il valore!
+Se non c'è niente aggiunge un valore di default dato dal secondo argomento, ma
+in effetti quello è probabilmente secondario; come dice la parola stessa get serve
+a prendere il valore (in ogni caso).
+
+NOTA: get estrae solamente, per modificare il valore bisogna effettivamente assegnarlo...
+quindi se ho un dizionario d che non contiene word allora print(d.get("word",-99))
+mi restituisce -99 ma non lo assegna a d[word]; per farlo devo scrivere
+d[word]=d.get("word",-99)
+
+Tuples are a limited version of lists. And the sum total of this is that tuples
+are sort of a more efficient version of lists that you can't modify. So they're
+really unmodifiable lists.
+
+So the difference is lists are mutable and then strings and tuples are not mutable.
+But that's part of the efficiency of tuples is that they're not mutable and that
+allows them to be stored more densely than lists. And so there's a whole bunch
+of things that can't be done with tuples. You can't sort a tuple. Whatever order
+you put the tuple in when you create it, it stays in that. You can't append,
+you can't extend it, you can't flip it with a reverse, lots of things don't
+work. And if you take a look at the directory output of lists and tuples, you
+see whoa, it's a subset. You can do count and index. Count looks up how many
+things match a particular value, index says where is a particular value, but
+you can't do append or extend or insert, pop, remove. Because all those methods
+inside lists that tuples don't have are the ones that make changes to it.
+So it's prohibited but it also allows Python to be more efficient knowing that
+tuples are not going to be changed. Lists it has to actually allocate extra
+memory and stuff like that to let them be changed.
+
+se vogliamo usare sorted su una lista di tuples sorted ordinerà solo sulla base
+della chiave, poiché dal momento che due chiavi uguali non possono esistere non
+esiste nemmeno il caso ambiguo in cui avrei bisogno di confrontare i valori.
+Se voglio ordinare la lista di tuples sulla base dei valori devo creare una nuova
+lista con le tuples dove scambio k e v - basta un for k,v in lsttup e poi una
+assegnazione doppia tipo tmp.append((v,k)) essendo tmp una lista (inizialmente vuota).
+Comunque una lista temporanea di tuples è effettivamente richiesta
+
+questo sorting in base ai valori è utile per generalizzare la ricerca della parola
+più frequente al caso delle prime N parole; basta costruire come prima con get il
+dictionary ed effettuare un sorting delle coppie inserendole in forma di tuples
+all'interno di una lista
+
+Per effettuare un sorting sulla base dei valori bisogna invertire con reverse=True
+come secondo argomento del sorted se li si vuole in ordine decrescente
+
+List Comprehension=pazzesco!!! Mi dà una regola per creare al volo una lista
+ad esempio con l'elemento generico calcolabile con un for "interno" dove specifico
+dove sta (quello che serve per costruire) l'elemento generico
+
+per fare una assegnazione fra tuples tipo (x,y)=(3,4) le parentesi non sono obbligatorie;
+qui ciò che prevale è che si abbia una doppia assegnazione semplicemente.
+
+OCCHIO: sorted è una funzione, sort un metodo! Quindi se x è una lista che voglio
+ordinare ma anche invertire o scrivo x.sort(reverse=True) (le liste vengono modificate
+dai metodi a differenza delle stringhe o tuples) oppure x=sorted(x,reverse=True)
+
+in python sembra non si possano fare le assegnazioni ovunque come ad esempio
+nell'argomento di una print, anche se forse mi sbaglio...
+
+penso che l'ordinamento fra stringhe sia quello alfabetico!
+
+siccome le keys sono distinte MENTRE I VALUES NO nei dictionaries per ordinare
+in base ai valori bisogna necessariamente passare per una lista di tuples che possa
+essere passata a sorted; così non ci sono vincoli di non ripetizione e in caso
+di valori uguali sorted può guardare anche al secondo slot delle nostre 2-uples
+
+su python l'indice di una lista deve essere un intero o uno slice; non ho la stessa
+libertà di matlab dove come indice posso avere un array di interi o logicals
+
+Per trovare ad esempio un indirizzo email in una stringa ci sono almeno tre modi:
+posso usare stringa.find("@") e lo stesso con " " eccetera per trovare le coordinate di
+inizio e fine dove effettuare lo slicing; posso effettuare un doppio split dividendo
+la stringa nelle singole parole, prendendo quella che mi interessa e splittando di nuovo
+per togliere il pezzo che voglio; infine posso usare le regular expressions in modo
+ancora più compatto dicendo cosa voglio trovare e di quello cosa voglio estrarre
+usando qualcosa tipo stringa=re.findall('@([^ ]*)',line) e poi stampo la stringa.
+Le parentesi tonde indicano la parte che voglio estrarre. Parentesi quadre=match
+non blank character, ma siccome il primo è ^ significa tutto tranne gli spazi (?)
+*=zero o più volte VEDI TABELLA PER CAPIRE MEGLIO ad es. perché ^ neghi il matching
+proprio delle []
+
+ So we're going to import the socket library and we're going to make a socket.
+ Now, this doesn't actually make a connection, think of a socket as a file
+ handle that doesn’t have any data associated with it yet.
+
+ file_handle.read(): legge tutto il file, mi restituisce un'unica stringa
+
+Now this is a new syntax that you haven't seen before, probably, and that's the
+triple-quoted string. So a triple-quoted string in Python is a potentially
+multi-line string. And so that's the beginning of the string. The string ends down here.
+The newlines that are here are part of the string.
+
+xml trees: metodo find per il testo, get per il valore degli attributi
+
+se hai bisogno di due metodi o di due indexings puoi usare i comandi
+consecutivamente tipo info["email"]["hide"] (è un diz. con un altro diz. come value alla key email)
+o tipo tree.findall('.//count')[0].text
+
+per usare la libreria json è importante usare loads perché i dati decodificati sono
+la string representation del json, non il json vero e proprio (l'operazione inversa
+si fa con dumps)
+
+
+
+And so in actuality, that program had several objects in it. The string object,
+there's an integer object. And so what happens is these objects also sort of are
+like containers of functionality, containers of awesomeness. And these objects
+sort of work together. And the program itself kind of orchestrates these objects,
+one or more objects working together. And the best way to think about an object,
+it's kind of like a program but smaller. It's a little thing that we can draw
+a boundary around and say, there's some code and data in there. There's logic,
+there's data, and we do stuff with it. And the idea is you take this big
+problem and break it into a series of problems, like small Lego blocks, and then
+build these things back up to build your program. And like I said, we have been
+using objects the whole time, strings, integers, dictionaries, lists, floating
+points, etc. And so if you think of a program, it's going to have different kinds
+of objects that are in it and these objects are going to work together to take
+the input of the program and produce the output of the program. And like I said,
+we've been doing this all along. But one other thing about objects is that each
+one contains some code and some data. And you can send stuff back and forth
+between objects, you can make new objects, you can do stuff with objects. But
+one of the things is like okay, if you're in the object, you just say oh, this
+is what this object does and I'm not going to worry too much around the world
+in which I'm embedded. And the same thing is true about the outside world. We're
+going to use this object and we're not going to look on the inside of it. So from
+outside looking in, you ignore the detail. From inside looking out, you ignore the
+outer detail. And so it's a way to draw a nice bright line and say you worry about
+this and we'll worry about that. It's a separation of concerns.
+
+IMPORTANTE: penso di aver capito come funziona il punto per un dato oggetto, dovrebbe
+essere così: oggetto.attributo mi restituisce un attributo mentre oggetto.metodo()
+chiama la funzione che è quel dato metodo. Ad esempio in un xml tree il .text mi dà
+l'attributo mentre cose tipo .decode() chiamano la funzione - o tipo .sort() per
+una lista, .find() per una stringa, .items() per un dictionary...
+
+esempio di Chuck: definisce una classe PartyAnimal dotata del metodo party.
+Scrive an=PartyAnimal() e poi dice che le due scritture an.party() e
+PartyAnimal.party(an) sono equivalenti --> ha un sacco senso
