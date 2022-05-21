@@ -1,0 +1,66 @@
+In un database le ripetizioni sono una cosa negativa. Immagina di avere un database musicale; lo stesso nome di una data band sarà ripetuto tante volte -> meglio rimpiazzare
+questa stringa con un intero (categorical type di pandas, StringsAsFactors di R...)
+I database vengono progettati in modo che ad esempio il genere, l'album, l'artista eccetera nella table principale puntino ad altre tables -> si costruiscono relazioni fra
+tables. Se rappresentiamo queste relazioni con delle frecce la coda sta nella foreign key della table di partenza e la punta nella primary key della table di arrivo - cioè 
+alcuni attributi vengono scelti come primary/foreign key a seconda della relazione che vogliamo modellizzare. Altri attributi inoltre possono essere designati come
+logical keys se ci aspettiamo che verranno usati in WHERE o ORDER BY statements - cioè li usiamo per dei confronti logici.
+
+Per creare tante tables di solito si parte dalle foglie, dalle tables più esterne nel diagramma con le frecce. Quando si crea una table e si specifica la natura
+di un certo attributo oltre al tipo si possono mettere altre parole chiave. Ad esempio:
+
+CREATE TABLE Album (
+      id        INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
+      artist_id INTEGER,
+      title     TEXT
+)
+
+id sarà not null, una primary key, non scegliamo noi il suo valore (il database effettuerà automaticamente degli incrementi, cioè id = 1,2,3,4... senza che lo specifichiamo
+noi a mano) e avrà valori unici (certo, l'id deve essere distinto)
+
+I comandi SQL sono case insensitive, i dati case sensitive
+
+In sqlite browser puoi eseguire più comandi contemporaneamente a patto di separarli con ;
+
+Usare il discorso di StringAsFactors non è appena per risparmiare spazio ma per ridurre la quantità di dati da scansionare per trovare quello che ci serve
+
+SELECT serve a recuperare informazioni, a leggere dati - è UPDATE che modifica/INSERT che crea
+
+select Album.title, Artist.name from Album join Artist on Album.artist_id = Artist.id
+seleziona le colonne title e name dalla table Album considerando in un'unica table le tables Album e Artist; fondi le righe (considerale come unite) quando avviene
+la condizione specificata da on, che in questo caso è la coincidenza del campo artist_id di Album con quello id di Artist (relazione fra la foreign key artist_id di una table e la
+primary key id dell'altra)
+(pare si possa usare pure where modificando opportunamente il comando)
+Grazie a questo comando stiamo sfruttando eliminando l'id numerico "mediatore" recuperando le stringhe che sono human-readable
+
+Recap: join fonde le righe dove c'è un match specificato da ON
+SELECT quello che vogliamo vedere FROM table che ci serve 1 JOIN table che ci serve 2 ON campo 1 = campo 2 (dove campo 1 e campo 2 sono i campi da usare per 
+stabilire se c'è il match necessario a fondere le righe provenienti dalle due tables interessate)
+
+senza una ON clause crea tutte le possibili combinazioni (accoppiamenti) di righe (ogni riga della prima viene accoppiata con ogni riga della seconda); 
+quando aggiungiamo una ON clause fra tutte queste possibili combinazioni vengono selezionate solo quelle che fanno un match
+
+
+select Track.title, Artist.name, Album.name, Genre.name from Track join Genre join Album join Artist on Track.genre_id = Genre.id and Track.album_id = Album.id and 
+Album.artist_id = Artist.id
+
+select le cose che ci interessano in output from ... join ... join ... (crea tutte le possibili combinazioni di righe fra queste tables) on ... (tieni solo questi match)
+
+Con questo comando (join clause) abbiamo ricostruito la replication senza effettuarne lo storing! Join effettua concretamente la costruzione di queste relazioni
+
+Quando abbiamo definito un certo campo con UNIQUE dobbiamo usare INSERT OR IGNORE INTO ... per evitare errori (cioè non inserire duplicati)
+In alternativa si può usare INSERT OR REPLACE (almeno in sqlite)
+
+
+
+One to many relationship: molte tracks corrispondono allo stesso album. Una madre, tanti figli
+Many to many relationship: libri e autori. Un autore può scrivere tanti libri e un libro può essere co-scritto da tanti autori
+In questo caso non si può mettere da qualche parte una foreign key ben definita, quindi si costruisce una table in the middle (junction table), con la quale
+scomponiamo la mtm rel. in due otm rel. (2 foreign keys, 0 primary keys)
+Altro esempio: corsi e utenti (tanti utenti per corso e tanti corsi per utente)
+Per creare una table intermedia così si creano due campi e poi si usa PRIMARY KEY (id1, id2) così la combinazione di questi due è unica
+
+sqlite3 python: il cursor è più o meno come il file handle, serve a mandare comandi alla connessione. Possono esserci più cursori relativi alla stessa connessione
+per mandare più comandi
+
+Quando si crea un campo UNIQUE per effettuare INSERT INTO bisogna mettere anche OR IGNORE in modo tale che non esploda se per sbaglio proviamo a mettere una riga ripetuta
+Altrimenti si può usare OR REPLACE se si vuole aggiornare la riga già esistente
